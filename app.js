@@ -13,7 +13,7 @@ const filtersEl = document.getElementById("genre-filters");
 function toStreamUrl(url) {
   const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
   if (!match) return url;
-  return `https://docs.google.com/uc?export=open&id=${match[1]}`;
+  return `https://drive.usercontent.google.com/download?id=${match[1]}&export=download`;
 }
 
 function getFilteredTracks() {
