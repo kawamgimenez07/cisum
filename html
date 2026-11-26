@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cisum — Player</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <h1>cisum</h1>
+      <p>Drive Audio Player</p>
+    </header>
+
+    <section class="now-playing">
+      <span id="track-genre" class="badge">Traps</span>
+      <h2 id="track-title">Toque em uma música</h2>
+      <audio id="audio-player" controls preload="none"></audio>
+      <div class="controls">
+        <button id="btn-prev" type="button">⏮ Anterior</button>
+        <button id="btn-next" type="button">Próxima ⏭</button>
+      </div>
+    </section>
+
+    <nav class="filters" id="genre-filters"></nav>
+
+    <ul class="playlist" id="playlist"></ul>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
