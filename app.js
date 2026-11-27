@@ -10,9 +10,13 @@ const genreEl = document.getElementById("track-genre");
 const playlistEl = document.getElementById("playlist");
 const filtersEl = document.getElementById("genre-filters");
 
-function toStreamUrl(url) {
-  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-  if (!match) return url;
+function toStreamUrl(track) {
+  if (track.url) return track.url;
+  const rawUrl = track.driveUrl || "";
+  const match =
+    rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) ||
+    rawUrl.match(/id=([a-zA-Z0-9_-]+)/);
+  if (!match) return rawUrl;
   return `https://drive.usercontent.google.com/download?id=${match[1]}&export=download`;
 }
 
@@ -68,7 +72,7 @@ function playTrack(index) {
 
   titleEl.textContent = track.title;
   genreEl.textContent = track.genre;
-  audio.src = toStreamUrl(track.driveUrl);
+  audio.src = toStreamUrl(track);
   audio.play().catch(() => {});
   renderPlaylist();
 }
