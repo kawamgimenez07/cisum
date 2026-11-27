@@ -1,31 +1,180 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>cisum — Player</title>
-  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#2d1c7f',
+              light: '#6d5dfc',
+              glow: '#4c35de',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 14px;
+      width: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      margin-top: -4px;
+      box-shadow: 0 0 10px rgba(109, 93, 252, 0.8);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+  </style>
 </head>
-<body>
-  <main class="app">
-    <header class="header">
-      <h1>cisum</h1>
-      <p>Drive Audio Player</p>
+<body class="bg-black text-zinc-100 antialiased selection:bg-brand-light selection:text-white min-h-screen flex justify-center">
+
+
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-brand/30 blur-[120px] pointer-events-none -z-10"></div>
+
+  <main class="w-full max-w-md px-4 py-6 flex flex-col gap-5">
+    
+
+    <header class="flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-light to-brand flex items-center justify-center shadow-lg shadow-brand/40">
+          <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+        </div>
+        <h1 class="text-xl font-bold tracking-tight text-white">cisum</h1>
+      </div>
+      <span id="track-count" class="text-xs font-medium text-zinc-500 bg-zinc-900/80 border border-zinc-800 px-2.5 py-1 rounded-full">
+        0 faixas
+      </span>
     </header>
 
-    <section class="now-playing">
-      <span id="track-genre" class="badge">Traps</span>
-      <h2 id="track-title">Toque em uma música</h2>
-      <audio id="audio-player" controls preload="none"></audio>
-      <div class="controls">
-        <button id="btn-prev" type="button">⏮ Anterior</button>
-        <button id="btn-next" type="button">Próxima ⏭</button>
+
+    <section class="relative overflow-hidden rounded-2xl bg-zinc-950/90 border border-zinc-800/80 p-5 shadow-2xl shadow-black">
+      <div class="absolute -right-10 -top-10 w-36 h-36 bg-brand/25 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <span id="track-genre" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand/60 text-indigo-200 border border-brand-light/30">
+          Pronto
+        </span>
+        <div id="equalizer" class="hidden items-end gap-0.5 h-3.5">
+          <span class="w-1 bg-brand-light rounded-full animate-pulse h-2"></span>
+          <span class="w-1 bg-brand-light rounded-full animate-bounce h-3.5"></span>
+          <span class="w-1 bg-brand-light rounded-full animate-pulse h-2.5"></span>
+        </div>
       </div>
+
+      <h2 id="track-title" class="text-base font-semibold text-white leading-snug line-clamp-2 min-h-[2.75rem]">
+        Toque em uma música
+      </h2>
+
+
+      <div class="mt-4 flex flex-col gap-1.5">
+        <input 
+          id="progress-bar" 
+          type="range" 
+          min="0" 
+          max="100" 
+          value="0" 
+          class="w-full rounded-full bg-zinc-800"
+        />
+        <div class="flex justify-between text-[11px] font-mono text-zinc-500">
+          <span id="current-time">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+      </div>
+
+
+      <div class="mt-3 flex items-center justify-between gap-2">
+        <button id="btn-shuffle" type="button" title="Aleatório"
+          class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition active:scale-95">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-3">
+          <button id="btn-prev" type="button" title="Anterior"
+            class="p-3 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 transition active:scale-95">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+            </svg>
+          </button>
+
+          <button id="btn-play" type="button" title="Play / Pause"
+            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-light to-brand hover:brightness-110 text-white flex items-center justify-center shadow-lg shadow-brand/50 transition active:scale-95">
+
+            <svg id="icon-play" class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+
+            <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+
+          <button id="btn-next" type="button" title="Próxima"
+            class="p-3 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 transition active:scale-95">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            </svg>
+          </button>
+        </div>
+
+        <button id="btn-loop" type="button" title="Repetir faixa"
+          class="p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition active:scale-95">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3"/>
+          </svg>
+        </button>
+      </div>
+
+      <audio id="audio-player" preload="none"></audio>
     </section>
 
-    <nav class="filters" id="genre-filters"></nav>
 
-    <ul class="playlist" id="playlist"></ul>
+    <div class="relative">
+      <svg class="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
+      </svg>
+      <input 
+        id="search-input" 
+        type="text" 
+        placeholder="Buscar música ou artista..." 
+        class="w-full bg-zinc-950 border border-zinc-800/90 focus:border-brand-light rounded-xl pl-10 pr-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 outline-none transition"
+      />
+    </div>
+
+
+    <nav class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="genre-filters"></nav>
+
+
+    <ul class="flex flex-col gap-2 pb-10" id="playlist"></ul>
+
   </main>
 
   <script src="app.js"></script>
